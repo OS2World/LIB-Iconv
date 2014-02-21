@@ -1,0 +1,9 @@
+LIBRARY         iconv	INITINSTANCE
+DATA MULTIPLE NONSHARED
+
+DESCRIPTION     '@#ilyaz.org/:0.2.1a#@Code sets conversion DLL; frontend to builtin UCONV DLL of OS/2. Build for EMX -Zmtd'
+
+EXPORTS
+	iconv
+	iconv_close
+	iconv_open

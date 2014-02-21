@@ -1,0 +1,59 @@
+'\" t
+.\" @(#)iconv_close.3 1.6 97/02/03 SMI;
+'\"macro stdmacro
+.nr X
+.TH iconv_close 3 "29 Dec 1996"
+.SH NAME
+iconv_close \- code conversion deallocation function
+.SH SYNOPSIS
+.B #include <iconv.h>
+.LP
+.BI "int iconv_close(iconv_t " cd );
+.SH DESCRIPTION
+.IX "iconv_close" "" "\fLiconv_close\fP \(em code conversion deallocation function"
+.IX "code conversion deallocation function" "" "code conversion deallocation function \(em \fLiconv_close\fP"
+The
+.B iconv_close(\|)
+function deallocates the conversion descriptor
+.I cd
+and all other associated resources allocated by the
+.BR iconv_open (3)
+function.
+.LP
+If a file descriptor is used to implement the type
+.BR iconv_t ,
+that file descriptor will be closed.
+.SH "RETURN VALUES"
+Upon successful completion,
+.B iconv_close(\|)
+returns
+.BR 0 ;
+otherwise, it returns
+.B -1
+and sets
+.B errno 
+to indicate the error.
+.SH ERRORS
+The 
+.B iconv_close(\|)
+function may fail if:
+.TP 15
+.SB EBADF
+The conversion descriptor is invalid.
+.SH ATTRIBUTES
+See
+.BR attributes (5)
+for descriptions of the following attributes:
+.sp
+.TS
+box;
+cbp-1 | cbp-1
+l | l .
+ATTRIBUTE TYPE	ATTRIBUTE VALUE
+=
+MT-Level	MT-Safe
+.TE
+.SH SEE ALSO
+.BR iconv (3),
+.BR iconv_open (3),
+.BR attributes (5)

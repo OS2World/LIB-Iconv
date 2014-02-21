@@ -1,0 +1,107 @@
+'\" t
+.\" @(#)iconv_open.3 1.6 97/02/03 SMI;
+'\"macro stdmacro
+.nr X
+.TH iconv_open 3 "29 Dec 1996"
+.SH NAME
+iconv_open \- code conversion allocation function
+.SH SYNOPSIS
+.B #include <iconv.h>
+.LP
+.BI "iconv_t iconv_open(const char *" tocode,
+.if n .ti +5n
+.BI "const char *"  fromcode );
+.SH DESCRIPTION
+.IX "iconv_open" "" "\fLiconv_open\fP \(em code conversion allocation function"
+.IX "code conversion allocation function" "" "code conversion allocation function \(em \fLiconv_open\fP"
+The
+.B iconv_open(\|)
+function
+returns a conversion descriptor
+that describes a conversion
+from the 
+codeset specified by the string pointed to by the
+.I fromcode
+argument to the codeset specified by the string pointed to by the
+.I tocode
+argument.
+For state-dependent encodings, the conversion descriptor will be in 
+a codeset-dependent initial shift state, ready
+for immediate use with the 
+.BR iconv (3)
+function.
+.LP
+Settings of
+.I fromcode
+and
+.I tocode
+and their permitted combinations are implementation-dependent.
+.LP
+A conversion descriptor remains valid in a process until that process closes
+it.
+.SH "RETURN VALUES"
+Upon successful completion 
+.B iconv_open(\|)
+returns a conversion descriptor for use on subsequent calls to 
+.B iconv(\|).
+Otherwise,
+.B iconv_open(\|)
+returns
+.B (iconv_t) \-1
+and sets
+.B errno
+to indicate the error.
+.SH ERRORS
+The 
+.B iconv_open
+function may fail if:
+.TP 15
+.SB EMFILE
+.SB {OPEN_MAX}
+files descriptors are currently open in the calling process.
+.TP
+.SB ENFILE
+Too many files are currently open in the system.
+.TP
+.SB ENOMEM
+Insufficient storage space is available.
+.TP
+.SB EINVAL
+The conversion specified by
+.I fromcode
+and
+.I tocode
+is not supported by the implementation.
+.br
+.ne 9
+.SH ATTRIBUTES
+See
+.BR attributes (5)
+for descriptions of the following attributes:
+.sp
+.TS
+box;
+cbp-1 | cbp-1
+l | l .
+ATTRIBUTE TYPE	ATTRIBUTE VALUE
+=
+MT-Level	MT-Safe
+.TE
+.SH SEE ALSO
+.BR iconv (3),
+.BR iconv_close (3),
+.BR malloc (3C),
+.BR attributes (5)
+.SH NOTES
+.B iconv_open(\|)
+uses
+.BR malloc (3C)
+to allocate space for internal buffer areas.
+.B iconv_open(\|) 
+may fail if there is insufficient storage space
+to accommodate these buffers.
+.LP
+Portable applications must assume that conversion descriptors are not
+valid after a call to one of the
+.B exec
+functions.

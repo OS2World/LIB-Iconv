@@ -1,0 +1,185 @@
+'\" t
+.\" @(#)iconv.3 1.10 97/05/27 SMI;
+.\" Copyright (c) 1992, X/Open Company Limited
+.\" All Rights Reserved
+.\" Portions Copyright (c) 1997, Sun Microsystems, Inc.
+.\" All Rights Reserved
+.TH iconv 3 "18 Apr 1997"
+.SH NAME
+iconv \- code conversion function
+.SH SYNOPSIS
+.B "#include <iconv.h>"
+.LP
+.BI "size_t iconv(iconv_t "  cd ,
+.BI "const char **" inbuf ,
+.if n .ti +5n
+.BI "size_t *" inbytesleft ,
+.BI "char **" outbuf , "
+.ti +5n
+.BI "size_t *" outbytesleft );
+.SH DESCRIPTION
+.IX "iconv" "" "\fLiconv\fP \(em code conversion function"
+.IX "code conversion function" "" "code conversion function \(em \fLiconv\fP"
+The
+.B iconv(\|)
+function converts the sequence of characters from one code set, 
+in the array specified by
+.IR inbuf ,
+into a sequence of corresponding characters in another code set,
+in the array specified by
+.IR outbuf .
+The code sets are those specified in the
+.IR iconv_open (\|)
+call that returned the conversion descriptor,
+.IR cd .
+The
+.I inbuf
+argument points to a variable that 
+points to the first character in the input buffer and
+.I inbytesleft
+indicates the number of bytes to the end of the buffer to be converted.
+The
+.I outbuf
+argument points to a variable that 
+points to the first available byte in the output buffer and
+.I outbytesleft
+indicates the number of the available bytes to the end of the buffer.
+.P
+For state-dependent encodings, the conversion descriptor
+.I cd
+is placed into its initial shift state
+by a call for which
+.I inbuf
+is a null pointer, or for which
+.I inbuf
+points to a null pointer.
+When
+.B iconv(\|)
+is called in this way, and if 
+.I outbuf
+is not a null pointer or a pointer to a null pointer, and
+.I outbytesleft
+points to a positive value,
+.B iconv(\|)
+will place, into the output buffer, 
+the byte sequence to change the output buffer to its initial
+shift state.  If the output buffer is not large enough to hold the entire
+reset sequence,
+.B iconv(\|)
+will fail and set 
+.B errno
+to
+.BR \s-1E2BIG\s0 .
+Subsequent calls with
+.I inbuf
+as other than a null pointer or a pointer to a null pointer cause the 
+conversion to take place from the current state of the conversion descriptor.
+.LP
+If a sequence of input bytes does not form a valid character
+in the specified code set, conversion stops 
+after the previous successfully converted character.
+If the input buffer ends with an incomplete character or shift sequence,
+conversion stops after the previous successfully converted bytes.
+If the output buffer is not large enough to hold the entire converted
+input, conversion stops just prior to the input bytes that would cause the
+output buffer to overflow.
+The variable pointed to by
+.I inbuf
+is updated to point to the byte following the last byte successfully
+used in the conversion.  The
+value pointed to by
+.I inbytesleft
+is decremented to reflect the number of bytes still not converted in
+the input buffer.
+The variable pointed to by
+.I outbuf
+is updated to point to the byte following the last byte of converted
+output data.
+The value pointed to by
+.I outbytesleft
+is decremented to reflect the number of bytes still available in the
+output buffer.
+For state-dependent encodings, the conversion descriptor is updated 
+to reflect the shift state in effect at the end of the last 
+successfully converted byte sequence.
+.LP
+If 
+.B iconv(\|)
+encounters a character in the input buffer that is legal, but for which an
+identical character does not exist in the target code set, 
+.B iconv(\|)
+performs an implementation-defined conversion on this character.
+.SH RETURN VALUES
+The 
+.B iconv(\|)
+function updates the variables pointed to by the arguments to reflect the
+extent of the conversion and returns the number of non-identical conversions
+performed.  If the entire string in the input buffer is converted, the value
+pointed to by
+.I inbytesleft
+will be
+.BR 0 .
+If the input conversion is stopped due to any conditions 
+mentioned above, the value pointed to by 
+.I inbytesleft
+will be non-zero and 
+.B errno
+is set to indicate the condition.  If an error occurs
+.B iconv(\|)
+returns
+.B (size_t) \-1
+and sets
+.B errno
+to indicate the error. 
+.SH ERRORS
+The
+.B iconv(\|)
+function will fail if:
+.TP 15
+.SB EILSEQ
+Input conversion stopped due to an input byte that does not belong to the
+input code set.
+.TP
+.SB E2BIG
+Input conversion stopped due to lack of space in the output buffer.
+.TP
+.SB EINVAL
+Input conversion stopped due to an incomplete 
+character or shift sequence at the end of the input buffer.
+.LP
+The
+.B iconv(\|)
+function may fail if:
+.TP 15
+.SB EBADF
+The
+.I cd
+argument is not a valid open conversion descriptor.
+.SH FILES
+.PD 0
+.TP 25
+.B /usr/lib/iconv/*.so
+conversion modules
+.PD	
+.br
+.ne 9
+.SH ATTRIBUTES
+See
+.BR attributes (5)
+for descriptions of the following attributes:
+.sp
+.TS
+box;
+cbp-1 | cbp-1
+l | l .
+ATTRIBUTE TYPE	ATTRIBUTE VALUE
+=
+MT-Level	MT-Safe
+.TE
+.SH SEE ALSO
+.BR iconv (1),
+.BR iconv_close (3),
+.BR iconv_open (3),
+.BR attributes (5),
+.BR iconv (5),
+.BR iconv_unicode (5)
